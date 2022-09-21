@@ -11,13 +11,9 @@ public class App {
     }
 
     public static void home(Terminal terminal) {
-        final String RED = "\u001B[31";
-        final String RESET = "u001B[0m";
-
         while (true) {
             App.clear();
             App.divider();
-            System.out.println(RED + "Red COLORED" + RESET);
             System.out.println(" 1) Hjælp\n 2) Kundemenu\n 3) Admin menu ");
 
             if (terminal.loginBool) {

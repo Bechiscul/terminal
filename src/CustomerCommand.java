@@ -38,36 +38,38 @@ public class CustomerCommand implements Command {
     }
 
     public void danishBuyCommand(Terminal terminal) {
-        App.clear();
-        App.divider();
-        System.out.println("1) Køb billetter");
-        System.out.println("2) Udskriv Biletter");
-        System.out.println("3) Se Balance");
-        System.out.println("4) Indsæt");
-        System.out.println("5) Udbetal");
-        System.out.println("6) Tilbage");
-        App.divider();
-        final String input = terminal.scanner.nextLine();
+        while (true) {
+            App.clear();
+            App.divider();
+            System.out.println("1) Køb billetter");
+            System.out.println("2) Udskriv Biletter");
+            System.out.println("3) Se Balance");
+            System.out.println("4) Indsæt");
+            System.out.println("5) Udbetal");
+            System.out.println("6) Tilbage");
+            App.divider();
+            final String input = terminal.scanner.nextLine();
 
-        switch (input) {
-            case "1":
-                buyTickets(terminal);
-                return;
-            case "2":
-                new PrintTicketCommand().run(terminal);
-                return;
-            case "3":
-                balance(terminal);
-                break;
-            case "4":
-                insert(terminal);
-                break;
-            case "5":
-                udbetal(terminal);
-                break;
-            case "6":
-                break;
+            switch (input) {
+                case "1":
+                    buyTickets(terminal);
+                    break;
+                case "2":
+                    new PrintTicketCommand().run(terminal);
+                    break;
+                case "3":
+                    balance(terminal);
+                    break;
+                case "4":
+                    insert(terminal);
+                    break;
+                case "5":
+                    udbetal(terminal);
+                    break;
+                case "6":
+                    return;
 
+            }
         }
     }
 
@@ -132,10 +134,10 @@ public class CustomerCommand implements Command {
     public int ticketInputChecker(int input, Terminal terminal) {
         if (input > 10) {
             System.out.println("Hov du kan maks købe 10 biletter");
-            buyTickets(terminal);
+            return 0;
         } else if (input < 0) {
             System.out.println("Husk at køb en billet");
-            buyTickets(terminal);
+            return 0;
         }
         System.out.println("Du har købt " + input + " billetter!");
         System.out.println("");
