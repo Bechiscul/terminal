@@ -14,11 +14,15 @@ public class CustomerCommand implements Command {
 
     }
 
+    // initialiser funktion, og tjekker om sproget er på dansk
+    // gør det muligt at have flere forskellige sprogmenuer.
     public void initialiseCustomerCommand(Terminal terminal) {
         if (!terminal.loginBool) {
             login(terminal);
         }
-        danishBuyCommand(terminal);
+        if (terminal.loginBool) {
+            danishBuyCommand(terminal);
+        }
     }
 
     public void login(Terminal terminal) {
@@ -37,10 +41,15 @@ public class CustomerCommand implements Command {
         }
     }
 
+    // hvis sproget er dansk, initialiser den danske købCommand
     public void danishBuyCommand(Terminal terminal) {
         while (true) {
+
             App.clear();
             App.divider();
+            showUserData(terminal);
+            App.divider();
+
             System.out.println("1) Køb billetter");
             System.out.println("2) Udskriv Biletter");
             System.out.println("3) Se Balance");
@@ -50,6 +59,7 @@ public class CustomerCommand implements Command {
             App.divider();
             final String input = terminal.scanner.nextLine();
 
+            // kalder de forskellige funktion baseret på brugerens input
             switch (input) {
                 case "1":
                     buyTickets(terminal);
@@ -68,52 +78,51 @@ public class CustomerCommand implements Command {
                     break;
                 case "6":
                     return;
-
             }
         }
     }
 
-    private void udbetal(Terminal terminal) {
-        App.clear();
-        App.divider();
-        int udbetaling = 0;
-        // int femHundrede = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 500;
-        // int hundrede = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 100 - femHundrede*500;
-        // int halvtreds = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 50 - hundrede*100 - femHundrede*500;
-        // int tyve = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 20 - hundrede*100 - femHundrede*500 - halvtreds*50;
-        // int ti = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 10;
-        // int fem = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 5;
-        // int to = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 2;
-        // int en = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % 1;
-        // int enHalv = (terminal.userBalance - (terminal.ticketAmount *
-        // terminal.ticketPrice)) % (1 / 2);
+    // udbetaler penge tilbage til brugeren
+    // I dets møntform, med simpels mulige udbetalingsform.
+    public static void udbetal(Terminal terminal) {
+        terminal.totalBalance -= terminal.userBalance;
 
+        int[] moneyArr = { 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1 };
+        int[] udbetalingsArr = new int[10];
+
+        for (int i = 0; i < moneyArr.length; i++) {
+            udbetalingsArr[i] = terminal.userBalance / moneyArr[i];
+            terminal.userBalance -= udbetalingsArr[i] * moneyArr[i];
+        }
+        System.out.println("Du får udbetalt i kontant: ...");
+        for (int i = 0; i < udbetalingsArr.length; i++) {
+            if (udbetalingsArr[i] >= 1) {
+                System.out.println(udbetalingsArr[i] + ":       " + moneyArr[i] + " kr");
+            }
+
+        }
+        App.awaitEnter(terminal);
     }
 
+    // indsæt beløb til brugerens konto
     private void insert(Terminal terminal) {
         App.clear();
         App.divider();
         while (true) {
             System.out.println("Indsæt et beløb i kontant");
             String input = terminal.scanner.nextLine();
-            if (isNumeric(input)) {
+            if (isNumeric(input) && Integer.parseInt(input) > 0) {
                 terminal.userBalance += Integer.parseInt(input);
+                terminal.totalBalance += Integer.parseInt(input);
                 return;
             } else {
                 App.clear();
-                System.out.println("Hov noget gik galt! prøv igen");
+                App.errorMSG();
             }
         }
     }
 
+    // viser brugerens balance
     private void balance(Terminal terminal) {
         App.clear();
         App.divider();
@@ -121,57 +130,69 @@ public class CustomerCommand implements Command {
         App.awaitEnter(terminal);
     }
 
+    // hvis brugeren vil købe billetter
     public void buyTickets(Terminal terminal) {
         App.clear();
-        System.out.println("du har " + terminal.ticketAmount + " billetter");
-        System.out.println("Vælg antallet af billetter som de ønsker at køber (maks. 10)");
-        takeTicketInput(terminal);
-        if (flereBiletterPromt(terminal)) {
-            return;
+        Boolean b = true;
+        while (b) {
+            showUserData(terminal);
+            System.out.println("Vælg antallet af billetter som de ønsker at køber (maks.100)");
+            System.out.println("Billet pris: " + terminal.ticketPrice + " dkk");
+
+            String input = terminal.scanner.nextLine();
+            int inputInt = 0;
+            if (isNumeric(input)) {
+                inputInt = Integer.parseInt(input); // hvis tal
+
+                if (inputInt * terminal.ticketPrice > terminal.userBalance) // hvis dyrere end brugeren har
+                {
+                    int negativeAmm = terminal.ticketPrice * inputInt - terminal.userBalance;
+                    System.out.println("Du mangler " + negativeAmm + " dkk");
+                    if (!continueOption(terminal)) {
+                        b = false;
+                    }
+                }
+
+                else if (inputInt > 100) {
+                    System.out.println("Du kan maks købe 100 biletter! ...");
+                    if (!continueOption(terminal)) {
+                        b = false;
+                    }
+                }
+
+                else if (inputInt < 0) {
+                    System.out.println("Antallet af biletter kan ikke være under 0! ...");
+                    if (!continueOption(terminal)) {
+                        b = false;
+                    }
+
+                }
+
+                else // alt er iorden
+                {
+                    terminal.ticketAmount += inputInt; // giver bruger billetter
+                    terminal.userBalance -= inputInt * terminal.ticketPrice; // trækker penge fra bruger sum
+                    System.out.println("Du har købt " + inputInt + " biletter");
+                    b = false;
+                }
+            }
+
+            else { // hvis ikke tal
+                App.errorMSG();
+                App.awaitEnter(terminal);
+            }
         }
     }
 
-    public int ticketInputChecker(int input, Terminal terminal) {
-        if (input > 10) {
-            System.out.println("Hov du kan maks købe 10 biletter");
-            return 0;
-        } else if (input < 0) {
-            System.out.println("Husk at køb en billet");
-            return 0;
-        }
-        System.out.println("Du har købt " + input + " billetter!");
-        System.out.println("");
-        terminal.totalBalance += input * terminal.ticketPrice;
-        return input;
+    // Grafisk funktion, tegner bare UI
+    public void showUserData(Terminal terminal) {
+        App.clear();
+        System.out.println("Du har: " + terminal.ticketAmount + " billetter");
+        System.out.println("Balance: " + terminal.userBalance + " dkk");
+        App.divider();
     }
 
-    public void takeTicketInput(Terminal terminal) {
-        String input = terminal.scanner.nextLine();
-        if (isNumeric(input)) {
-            terminal.ticketAmount += ticketInputChecker(Integer.parseInt(input), terminal);
-        } else {
-            System.out.println("Hov det er vist ikke et tal! prøv igen");
-            buyTickets(terminal);
-        }
-        return;
-    }
-
-    public Boolean flereBiletterPromt(Terminal terminal) {
-        System.out.println("Vil du købe flere billetter?");
-        System.out.println(" 1) Ja\n 2) Nej");
-
-        String inputBack = terminal.scanner.nextLine();
-        if (inputBack.equals(new String("2"))) {
-            return true;
-        } else if (inputBack.equals(new String("1"))) {
-            buyTickets(terminal);
-        } else {
-            System.out.println("Hov noget gik galt!");
-        }
-
-        return true;
-    }
-
+    // tjekker om input strengen er en integer
     public boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -184,4 +205,28 @@ public class CustomerCommand implements Command {
         return true;
     }
 
+    // Tjekker om brugen vil fortsætte og returnerer en boolsk værdi
+    public boolean continueOption(Terminal terminal) {
+        Boolean b = true;
+        String arg = "";
+
+        while (b) {
+            System.out.println("Vil du fortsætte?\n1) Ja\n2) Nej");
+            arg = terminal.scanner.nextLine();
+
+            if (arg.equals("1") || arg.equals("2")) {
+                b = false;
+            }
+
+            else {
+                System.out.println("Der skete en fejl, prøv igen! ...");
+            }
+        }
+        switch (arg) {
+            case "1":
+                return true;
+            default:
+                return false;
+        }
+    }
 }

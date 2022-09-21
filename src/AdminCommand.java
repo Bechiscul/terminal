@@ -2,7 +2,12 @@
 public class AdminCommand implements Command {
     public String password;
 
+    public String getName() {
+        return new String("admin");
+    }
+
     public void run(Terminal terminal) {
+        // hvis brugeren har tastet det rigtige password
         if (this.password.equals(terminal.adminPassword)) {
             displayAdminSettings(terminal);
         } else {

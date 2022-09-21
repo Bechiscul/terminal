@@ -25,10 +25,12 @@ public class Terminal {
     }
 
     public void readConfigFileOrSetup() throws IOException {
+
         try {
             File configFile = new File("config.txt");
             Scanner input = new Scanner(configFile);
 
+            // Parser filen, og angiver værdierne
             while (input.hasNextLine()) {
                 String line = input.nextLine();
                 String[] kv = line.split("=");
@@ -45,7 +47,15 @@ public class Terminal {
             }
             input.close();
 
-        } catch (FileNotFoundException e) {
+        }
+
+        /*
+         * hvis admin ikke har oprettet en fil endnu, (AKA. læsning fra config.txt giver
+         * fejl)
+         * Skal den oprette en ny fil, med administrators ønskede instillinger.
+         */
+        catch (FileNotFoundException e) {
+
             System.out.println("blip blop, doing setup...");
             System.out.println("indsæt password");
             String password = this.scanner.nextLine();
@@ -58,6 +68,8 @@ public class Terminal {
             tempFileWriter.write("password=" + password + "\n");
             tempFileWriter.write("ticketPrice=" + ticketPrice);
             tempFileWriter.close();
+
+            // her angives de valgte værdier
             this.adminPassword = password;
             this.ticketPrice = ticketPrice;
         }
