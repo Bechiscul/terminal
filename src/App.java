@@ -44,6 +44,7 @@ public class App {
     }
 
     // Rydder terminalen for alt input, hvis det er kørt i den rigtige terminal vel at mærke.
+    // Hvis det køres i den forkerte, printer den blot stringen uden at rydde konsollen.
     public static void clear() {
         System.out.println("\033[H\033[2J");
         System.out.flush();
