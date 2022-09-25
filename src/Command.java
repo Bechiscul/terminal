@@ -1,3 +1,3 @@
 public interface Command {
-    public void run(Terminal terminal);
+    public void run(Terminal terminal, String remainingInput);
 }

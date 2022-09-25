@@ -5,13 +5,9 @@ import java.util.concurrent.ExecutionException;
 
 public class CustomerCommand implements Command {
 
-    public void run(Terminal terminal) {
-        switch (terminal.language) {
-            case Danish:
-                initialiseCustomerCommand(terminal);
-                break;
-        }
-
+    public void run(Terminal terminal, String _remainingInput) {
+        System.out.println("yehaskdsa");
+        initialiseCustomerCommand(terminal);
     }
 
     // initialiser funktion, og tjekker om sproget er på dansk
@@ -20,6 +16,7 @@ public class CustomerCommand implements Command {
         if (!terminal.loginBool) {
             login(terminal);
         }
+
         if (terminal.loginBool) {
             danishBuyCommand(terminal);
         }
@@ -65,7 +62,7 @@ public class CustomerCommand implements Command {
                     buyTickets(terminal);
                     break;
                 case "2":
-                    new PrintTicketCommand().run(terminal);
+                    new PrintTicketCommand().run(terminal, "");
                     break;
                 case "3":
                     balance(terminal);

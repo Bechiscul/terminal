@@ -1,5 +1,5 @@
 public class PrintTicketCommand implements Command {
-    public void run(Terminal terminal) {
+    public void run(Terminal terminal, String _input) {
         App.clear();
         App.divider();
 

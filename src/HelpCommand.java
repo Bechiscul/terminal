@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class HelpCommand implements Command {
 
-    public void run(Terminal terminal) {
+    public void run(Terminal terminal, String _input) {
         admin(terminal);
 
     }

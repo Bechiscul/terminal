@@ -1,23 +1,14 @@
 
 public class AdminCommand implements Command {
-    public String password;
-
-    public String getName() {
-        return new String("admin");
-    }
-
-    public void run(Terminal terminal) {
+    public void run(Terminal terminal, String input) {
         // hvis brugeren har tastet det rigtige password
-        if (this.password.equals(terminal.adminPassword)) {
+        String password = input.split(" ")[0];
+        if (password.equals(terminal.adminPassword)) {
             displayAdminSettings(terminal);
         } else {
             System.out.println("Forkert Kodeord!");
             App.awaitEnter(terminal);
         }
-    }
-
-    public AdminCommand(String password) {
-        this.password = password;
     }
 
     public void displayAdminSettings(Terminal terminal) {

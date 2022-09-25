@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
@@ -15,46 +15,34 @@ public class App {
         // tegner DSB logo ved start...
         Logo logo = new Logo();
         logo.run();
+        App.clear();
 
-        while (true) {
-            App.clear();
-            App.divider();
-            System.out.println(" 1) Hjælp\n 2) Kundemenu\n 3) Admin menu ");
-
-            if (terminal.loginBool) {
-                System.out.println(" 4) Log ud!");
-            }
-
-            final String[] input = terminal.scanner.nextLine().split(" ");
-            switch (input[0]) {
-                case "1":
-                    new HelpCommand().run(terminal);
-                    break;
-                case "2":
-                    new CustomerCommand().run(terminal);
-                    break;
-                case "3":
-                    try {
-                        new AdminCommand(input[1]).run(terminal);
-                    } catch (IndexOutOfBoundsException strE) {
-                        System.out.println("Du skal huske at give et password!\nBrug formatet \"3 kodeord\"");
-                        App.awaitEnter(terminal);
-                    }
-                    break;
-                case "4": {
-                    if (terminal.loginBool) {
-                        if (terminal.userBalance > 0) {
-                            CustomerCommand.udbetal(terminal);
-                        }
-                        terminal.loginBool = false;
-                        terminal.ticketAmount = 0;
-                        terminal.userBalance = 0;
-                    }
-                    break;
+        String[] labels = {new String("Hjælp"), new String("Kundemenu"), new String("Admin"), new String("Log Ud")};
+        Command[] commands = {
+            new HelpCommand(),
+            new CustomerCommand(),
+            new AdminCommand(),
+            (Terminal t, String _i) -> {
+                if (t.loginBool) {
+                    if (t.userBalance > 0) CustomerCommand.udbetal(terminal);
+                    t.loginBool = false;
+                    t.ticketAmount = 0;
+                    t.userBalance = 0;
+                    return;
                 }
+                    
+                System.out.println("Du er ikke logget ind");
+                App.awaitEnter(terminal);
+            },
+
+            (Terminal t, String _i) -> {
+                System.out.println("5");
             }
-            App.divider();
-        }
+        }; 
+        
+        Menu menu = new Menu(Arrays.asList(labels), Arrays.asList(commands), false);
+        menu.run(terminal, "");
+        App.divider();
     }
 
     // clear console

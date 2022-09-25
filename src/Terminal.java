@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Terminal {
-    Language language;
     public Scanner scanner;
 
     public Boolean loginBool = false;
@@ -17,7 +16,6 @@ public class Terminal {
     public int totalBalance;
 
     public Terminal(Scanner scanner) throws IOException {
-        this.language = Language.Danish;
         this.scanner = scanner;
 
         // Read config file
@@ -73,10 +71,5 @@ public class Terminal {
             this.adminPassword = password;
             this.ticketPrice = ticketPrice;
         }
-    }
-
-    public static void initializeLanguage() {
-        System.out.println();
-        System.out.println();
     }
 }
