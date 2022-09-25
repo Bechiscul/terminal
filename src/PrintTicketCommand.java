@@ -18,8 +18,14 @@ public class PrintTicketCommand implements Command {
     }
 
     public void print(Terminal terminal, int i) {
-        // nul indexeret
-        System.out.println("Billet " + (i + 1) + " printet");
+        System.out.println("""
+                ███████████████████
+                █▄─▄▄▀█─▄▄▄▄█▄─▄─▀█
+                ██─██─█▄▄▄▄─██─▄─▀█
+                ▀▄▄▄▄▀▀▄▄▄▄▄▀▄▄▄▄▄▀
+                """);
+        System.out.println("Billet " + (i + 1));
+        System.out.println("Pris " + terminal.ticketPrice);
     }
 
 }
