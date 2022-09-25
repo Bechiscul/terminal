@@ -51,7 +51,7 @@ public class App {
 
     public static void awaitEnter(Terminal terminal) {
         System.out.println("\nTryk 'Enter' for at fortsætte...");
-        String awaitString = terminal.scanner.nextLine();
+        terminal.scanner.nextLine();
     }
 
     public static void divider() {

@@ -1,8 +1,3 @@
-import java.io.*;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-
 public class CustomerCommand implements Command {
 
     public void run(Terminal terminal, String _remainingInput) {
@@ -195,7 +190,7 @@ public class CustomerCommand implements Command {
             return false;
         }
         try {
-            int d = Integer.parseInt(strNum);
+            Integer.parseInt(strNum);
         } catch (NumberFormatException nfe) {
             return false;
         }
