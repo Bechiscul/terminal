@@ -22,6 +22,8 @@ public class App {
             new HelpCommand(),
             new CustomerCommand(),
             new AdminCommand(),
+            // I Java, kan man bruge en lambda (inline class ish), hvis ens interface kun kræver at en enkelt metode findes.
+            // Dette gør det super let at implementere diverse kommandoer, uden at skulle lave 40 filer :)
             (Terminal t, String _i) -> {
                 if (t.loginBool) {
                     if (t.userBalance > 0) CustomerCommand.udbetal(terminal);
@@ -34,10 +36,6 @@ public class App {
                 System.out.println("Du er ikke logget ind");
                 App.awaitEnter(terminal);
             },
-
-            (Terminal t, String _i) -> {
-                System.out.println("5");
-            }
         }; 
         
         Menu menu = new Menu(Arrays.asList(labels), Arrays.asList(commands), false);
@@ -45,7 +43,7 @@ public class App {
         App.divider();
     }
 
-    // clear console
+    // Rydder terminalen for alt input, hvis det er kørt i den rigtige terminal vel at mærke.
     public static void clear() {
         System.out.println("\033[H\033[2J");
         System.out.flush();
@@ -61,6 +59,6 @@ public class App {
     }
 
     public static void errorMSG() {
-        System.out.println("Hov noget gik galt! prøv igen");
+        System.out.println("Hov noget gik galt! Prøv igen");
     }
 }

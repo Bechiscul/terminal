@@ -1,7 +1,7 @@
 
 public class AdminCommand implements Command {
     public void run(Terminal terminal, String input) {
-        // hvis brugeren har tastet det rigtige password
+        // Hvis brugeren har tastet det rigtige password
         String password = input.split(" ")[0];
         if (password.equals(terminal.adminPassword)) {
             displayAdminSettings(terminal);

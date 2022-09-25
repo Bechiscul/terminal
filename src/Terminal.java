@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
+// Terminal håndterer alt global data og configurations indstillinger.
 public class Terminal {
     public Scanner scanner;
 
@@ -18,7 +19,9 @@ public class Terminal {
     public Terminal(Scanner scanner) throws IOException {
         this.scanner = scanner;
 
-        // Read config file
+        // Hvis der nu skulle ske en fejl, som der ikke bliver håndtere,
+        // er det vigtigt at vores program kan genstarte, så maskinen ikke skal sættes op igen,
+        // men blot kan huske de forrige indstillinger.
         readConfigFileOrSetup();
     }
 
@@ -29,6 +32,7 @@ public class Terminal {
             Scanner input = new Scanner(configFile);
 
             // Parser filen, og angiver værdierne
+            // Følger et meget simpelt format: key=value
             while (input.hasNextLine()) {
                 String line = input.nextLine();
                 String[] kv = line.split("=");
@@ -67,7 +71,7 @@ public class Terminal {
             tempFileWriter.write("ticketPrice=" + ticketPrice);
             tempFileWriter.close();
 
-            // her angives de valgte værdier
+            // Her angives de valgte værdier
             this.adminPassword = password;
             this.ticketPrice = ticketPrice;
         }
